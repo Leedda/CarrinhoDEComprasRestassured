@@ -10,14 +10,5 @@ import io.restassured.builder.ResponseSpecBuilder;
 import io.restassured.http.ContentType;
 
 public class config {
-	@Before
-	public void setUp() {
-		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
-		baseURI = "https://api.interzoid.com";
-		basePath = "/api";
-		RestAssured.requestSpecification = new RequestSpecBuilder().setContentType(ContentType.JSON ).build();
-		RestAssured.responseSpecification = new ResponseSpecBuilder().expectContentType(ContentType.JSON).build();
-		
-	}
-
+	
 }

@@ -8,14 +8,13 @@ import static org.junit.Assert.assertThat;
 import java.util.Map;
 
 import org.apache.http.HttpStatus;
-import org.apache.http.protocol.HTTP;
 
 import br.com.automacao.entity.User;
-import cucumber.api.java.Before;
 import cucumber.api.java.en.Given;
 import cucumber.api.java.en.Then;
 import cucumber.api.java.en.When;
 import gherkin.formatter.model.DocString;
+import io.cucumber.java.Before;
 import io.restassured.RestAssured;
 import io.restassured.builder.RequestSpecBuilder;
 import io.restassured.builder.ResponseSpecBuilder;
@@ -29,19 +28,30 @@ public class UserSteps {
 	private Response respostaCriaUsuario;
 	private User usuarioEsperado;
 	
-	@Given("Eu faco um POST {string} com os seguintes valores:")
+	@Before
+	public void setUp() {
+		RestAssured.enableLoggingOfRequestAndResponseIfValidationFails();
+		baseURI = "https://restapi.interzoid.com/utilities/weather/city";
+		//"https://restapi.demoqa.com/utilities/weather/city"
+		basePath = "/api";
+		RestAssured.requestSpecification = new RequestSpecBuilder().setContentType(ContentType.JSON ).build();
+		RestAssured.responseSpecification = new ResponseSpecBuilder().expectContentType(ContentType.JSON).build();
+		
+	}
+
+	@Given("^Eu faco um POST {string} com os seguintes valores:$")
 	public void eu_faco_um_post_com_os_seguintes_valores(String endpoint, Map<String, String> usuario) {  
 	}
 
-	@Given("quando tenho esse outro usuario:")
+	@Given("^quando tenho esse outro usuario:$")
 	public void quando_tenho_esse_outro_usuario(DocString usuario) {    
 	}
 
-	@Then("quando faco um GET para {string}, o usuario criado é retornado")
+	@Then("^quando faco um GET para {string}, o usuario criado é retornado$")
 	public void quando_faco_um_get_para_o_usuario_criado_é_retornado(String endpoint) {   
 	}
 
-	@When("crio um usuario")
+	@When("^crio um usuario$")
 	public void crio_um_usuario() {
 	    usuarioEsperado = new User();
 	    respostaCriaUsuario =
@@ -53,18 +63,27 @@ public class UserSteps {
 	    
 	}
 
-	@Then("recebo o status code {int}")
+	@Then("^recebo o status code {int}$")
 	public void recebo_o_status_code(Integer estadoHttp) {
 	    assertThat(respostaCriaUsuario.statusCode(), is(estadoHttp));
+	    
 	}
 
-	@Then("o usuario foi cadastrado")
+	@Then("^o usuario foi cadastrado$")
 	public void o_usuario_foi_cadastrado() {
+		
 	    given().
-	          param("email", "email", usuarioEsperado.getEmail()).
+	          param("city", usuarioEsperado.getCity()).
+	          param("state", usuarioEsperado.getState()).
 	    
-	    when().get(USUARIO_ENDPOINT).
+	    when().
+	          get(USUARIO_ENDPOINT).
 	    
-	    then().statusCode(HttpStatus.SC_OK).body("email", is(usuarioEsperado.getEmail()));	       
+	    then().
+	          statusCode(HttpStatus.SC_OK).
+	          statusCode(HttpStatus.SC_NOT_FOUND).
+	          statusCode(HttpStatus.SC_BAD_REQUEST).
+	          body("city", is(usuarioEsperado.getCity())).
+	          body("state", is(usuarioEsperado.getState()));
 	}
 }

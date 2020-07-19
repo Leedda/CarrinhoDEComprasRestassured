@@ -10,10 +10,14 @@ import java.io.File;
 
 @RunWith(Cucumber.class)
 @CucumberOptions(
-		plugin = { "pretty", "http:build/reports/feature.html"},
-        features = {"src/test/resources/features/users.feature"},
-        glue = {"Steps"}
+		plugin = { "pretty", "http:build/reports/feature.html", "json:target/reports/report-json/report.json"},
+        features = {"src/test/resources/features/user.feature"},
+        glue = {"steps"},
+		tags = {"@funcionais"}
 )
 public class UsersRunner {
-	
+	 @AfterClass
+	    public static void writeExtentReport() {
+	        Reporter.loadXMLConfig(new File("config/report.xml"));
+	    }
 }
