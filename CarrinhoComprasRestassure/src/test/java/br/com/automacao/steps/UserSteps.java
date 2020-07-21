@@ -75,6 +75,7 @@ public class UserSteps {
 	    given().
 	          param("city", usuarioEsperado.getCity()).
 	          param("state", usuarioEsperado.getState()).
+	          param("--","--").
 	    
 	    when().
 	          get(USUARIO_ENDPOINT).
@@ -84,6 +85,7 @@ public class UserSteps {
 	          statusCode(HttpStatus.SC_NOT_FOUND).
 	          statusCode(HttpStatus.SC_BAD_REQUEST).
 	          body("city", is(usuarioEsperado.getCity())).
-	          body("state", is(usuarioEsperado.getState()));
+	          body("state", is(usuarioEsperado.getState())).
+	          body("--", is("--"));
 	}
 }
